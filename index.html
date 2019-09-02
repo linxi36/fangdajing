@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>放大镜</title>
+    <style>
+       *{
+           padding:0;
+           margin:0;
+           font-size:0;
+       }
+       img{
+           display:block;
+       }
+       .left-box{
+           width:350px;
+           height:350px;
+           margin:100px 10px 0 312px;
+           position: relative;
+           float:left;
+           box-shadow:5px 5px 10px gray;
+       }
+       .left-box img{
+           width:100%;
+           height:100%;
+       }
+       .left-box .slide-box{
+           display:none;
+           width:175px;
+           height:175px;
+           background:palegreen;
+           opacity:0.5;
+           /* 改变遮罩层运动是相对于left进行移动的，所以得加上position */
+           position:absolute;
+           left:0;
+           top:0;
+           cursor:move;
+       }
+       .right-box{
+           display:none;
+           width:350px;
+           height:350px;
+           overflow:hidden;
+           position:relative;
+           float:left;
+           margin:100px;
+       }
+       /* 给img设置定位是为了放大图片时，img的图片跟着移动 */
+       .right-box img{
+           width:200%;
+           height:200%;
+           position:absolute;
+           top:0;
+           left:0;
+       }
+    </style>
+</head>
+<body>
+    <div class="left-box" id="left">
+        <div class="slide-box" id="box"></div>
+        <img src="./img/1.jpg" alt="">
+    </div>
+    <div class="right-box" id="right">
+        <img src="./img/1.jpg" alt="">
+    </div>
+    <script>
+        //获取left-box获取它的可视宽高，用于计算slide-box移动的位置
+        //获取slide-box进行遮罩层的移动
+        //获取right-box进行放大展示图片
+        var leftone = document.getElementById('left');
+	    var rightone = document.getElementById("right");
+	    var box = document.getElementById('box');
+        var rimg = right.getElementsByTagName('img')[0];
+        function getPosition(e){
+           var e = e || window.event;
+           //上边的位置，左边的位置
+           var top = e.clientY -leftone.offsetTop - box.offsetHeight/2;
+           var left = e.clientX - leftone.offsetLeft - box.offsetWidth/2;
+           //最大的top值与最大left
+           var maxtop = leftone.offsetHeight-box.offsetHeight;
+		   var maxleft = leftone.offsetWidth-box.offsetWidth;
+           var mvtop;
+           var mvleft;
+           var mintop = 0;
+           var minleft = 0;
+           if(top < mintop){
+            //    因为改变的是遮罩层css中的高度，所以得加上style
+                 box.style.top = mintop + 'px';
+                 mvtop = mintop;
+           }else if(top > maxtop){
+               box.style.top = maxtop + 'px';
+               mvtop = maxtop;
+           }else {
+                box.style.top = top +'px';
+                mvtop = top;
+           }
+           if(left < minleft){
+                 box.style.left = minleft + 'px';
+                 mvleft = minleft;
+           }else if(left > maxleft){
+               box.style.left = maxleft + 'px';
+               mvleft = maxleft;
+           }else {
+                box.style.left = left +'px';
+                mvleft = left;
+           }
+           rimg.style.top = -mvtop*2 +"px";
+		   rimg.style.left = -mvleft*2 +"px";
+        }
+        
+        leftone.onmousemove = function(e){
+            var e = e || window.event;
+             box.style.display = "block";
+             getPosition(e);
+             rightone.style.display = "block";
+        }
+        leftone.onmouseleave = function(e){
+            var e = e || window.event;
+            box.style.display = "none";
+            rightone.style.display = "none";
+        }
+    </script>
+</body>
+</html>
